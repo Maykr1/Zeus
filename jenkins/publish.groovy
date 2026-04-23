@@ -7,12 +7,13 @@ pipeline {
 
     environment {
         // --- DIRECTORIES ---
-        BACKEND_DIR         = "." 
-        FRONTEND_DIR        = ""
+        BBACKEND_DIR        = "zeus-api" 
+        FRONTEND_DIR        = "zeus-ui"
 
         // --- APP NAMES ---
-        BACKEND_APP_NAME    = "task-aggregator-api"
-        FRONTEND_APP_NAME   = "task-aggregator-ui"
+        BACKEND_APP_NAME    = "zeus-api"
+        FRONTEND_APP_NAME   = "zeus-ui"
+
 
         // --- NEXUS CONFIG ---
         NEXUS               = credentials('nexus-deploy')

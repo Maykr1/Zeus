@@ -7,8 +7,8 @@ pipeline {
 
     environment {
         // --- DIRECTORIES ---
-        BACKEND_DIR         = "../zeus-api" 
-        FRONTEND_DIR        = "../zeus-ui"
+        BACKEND_DIR         = "zeus-api" 
+        FRONTEND_DIR        = "zeus-ui"
 
         // --- APP NAMES ---
         BACKEND_APP_NAME    = "zeus-api"
