@@ -22,7 +22,7 @@
         <module>zeus-api</module>
         <module>zeus-ui</module>
     </modules>
-    
+     
     <properties>
         <java.version>25</java.version>
         <maven.compiler.release>25</maven.compiler.release>

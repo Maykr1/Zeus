@@ -44,6 +44,7 @@ pipeline {
                 // BACKEND PIPELINE
                 // ==========================================
                 stage('Backend') {
+                    tools { jdk 'JDK25' }
                     when {
                         allOf {
                             expression { env.BACKEND_DIR != "" }
