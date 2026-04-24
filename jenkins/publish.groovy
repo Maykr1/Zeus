@@ -50,8 +50,8 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    buildApp('maven', env.BACKEND_DIR)
-                    buildApp('flutter', env.FRONTEND_DIR)
+                    buildRelease('maven', env.BACKEND_DIR)
+                    buildRelease('flutter', env.FRONTEND_DIR, ['apk', 'web', 'linux'])
                 }
             }
         }

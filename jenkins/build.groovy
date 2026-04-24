@@ -41,7 +41,7 @@ pipeline {
             steps {
                 script {
                     testApp('maven', env.BACKEND_DIR)
-                    testApp('flutter', env.FRONTEND_DIR) // If you don't want to run this, don't even include it.
+                    testApp('flutter', env.FRONTEND_DIR)
                 }
             }
         }
@@ -49,8 +49,8 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    buildApp('maven', env.BACKEND_DIR)
-                    buildApp('flutter', env.FRONTEND_DIR)
+                    buildSnapshot('maven', env.BACKEND_DIR)
+                    buildSnapshot('flutter', env.FRONTEND_DIR, ['apk', 'web', 'linux'])
                 }
             }
         }
