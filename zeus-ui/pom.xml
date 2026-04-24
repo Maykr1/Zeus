@@ -11,6 +11,7 @@
 	</parent>
 	
 	<artifactId>zeus-ui</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 	<name>zeus-ui</name>
 
