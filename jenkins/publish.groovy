@@ -38,92 +38,42 @@ pipeline {
             }
         }
 
-        stage('Run Pipelines') {
-            parallel {
-                // ==========================================
-                // BACKEND PIPELINE
-                // ==========================================
-                stage('Backend') {
-                    tools { jdk 'JDK25' }
-                    when {
-                        allOf {
-                            expression { env.BACKEND_DIR != "" }
-                            anyOf {
-                                changeset "${env.BACKEND_DIR}/**"
-                                changeset "pom.xml"
-                            }
-                        }
-                    }
-                    stages {
-                        stage('Test') {
-                            steps {
-                                dir(env.BACKEND_DIR) { testApp('maven') }
-                            }
-                        }
-                        stage('Build') {
-                            steps {
-                                dir(env.BACKEND_DIR) { buildApp('maven') }
-                            }
-                        }
-                        stage('SonarQube') {
-                            steps {
-                                dir(env.BACKEND_DIR) { sonarApp('maven', env.BACKEND_APP_NAME) }
-                            }
-                        }
-                        stage('Publish Release') {
-                            steps {
-                                script {
-                                    env.BACKEND_RELEASE_VERSION = getReleaseVersion()
-                                }
-                                dir(env.BACKEND_DIR) {
-                                    setVersion('maven', env.BACKEND_RELEASE_VERSION)
-                                    containerizeApp('maven', env.BACKEND_APP_NAME, RELEASE_REPO, DOCKER_BASE, env.BACKEND_RELEASE_VERSION, 'both')
-                                }
-                            }
-                        }
-                    }
+        stage('Test') {
+            steps {
+                script {
+                    testApp('maven', env.BACKEND_DIR)
+                    testApp('flutter', env.FRONTEND_DIR)
                 }
+            }
+        }
 
-                // ==========================================
-                // FRONTEND PIPELINE
-                // ==========================================
-                stage('Frontend') {
-                    when {
-                        allOf {
-                            expression { env.FRONTEND_DIR != "" }
-                            anyOf {
-                                changeset "${env.FRONTEND_DIR}/**"
-                                changeset "pom.xml"
-                            }
-                        }
-                    }
-                    stages {
-                        stage('Test') {
-                            steps {
-                                dir(env.FRONTEND_DIR) { testApp('flutter') }
-                            }
-                        }
-                        stage('Build') {
-                            steps {
-                                dir(env.FRONTEND_DIR) { buildApp('flutter') }
-                            }
-                        }
-                        stage('SonarQube') {
-                            steps {
-                                dir(env.FRONTEND_DIR) { sonarApp('flutter', env.FRONTEND_APP_NAME) }
-                            }
-                        }
-                        stage('Publish Release') {
-                            steps {
-                                script {
-                                    env.FRONTEND_RELEASE_VERSION = getReleaseVersion()
-                                }
-                                dir(env.FRONTEND_DIR) {
-                                    containerizeApp('flutter', env.FRONTEND_APP_NAME, FLUTTER_RELEASE_REPO, DOCKER_BASE, env.FRONTEND_RELEASE_VERSION, 'both')
-                                }
-                            }
-                        }
-                    }
+        stage('Build') {
+            steps {
+                script {
+                    buildApp('maven', env.BACKEND_DIR)
+                    buildApp('flutter', env.FRONTEND_DIR)
+                }
+            }
+        }
+
+        stage('SonarQube') {
+            steps {
+                script {
+                    sonarApp('maven', env.BACKEND_APP_NAME, env.BACKEND_DIR)
+                    sonarApp('flutter', env.FRONTEND_APP_NAME, env.FRONTEND_DIR)
+                }
+            }
+        }
+
+        stage('Publish Release') {
+            steps {
+                script {
+                    env.BACKEND_RELEASE_VERSION = getReleaseVersion('maven', env.BACKEND_DIR)
+                    setVersion('maven', env.BACKEND_RELEASE_VERSION, env.BACKEND_DIR)
+                    containerizeApp('maven', env.BACKEND_APP_NAME, RELEASE_REPO, DOCKER_BASE, env.BACKEND_RELEASE_VERSION, 'both', env.BACKEND_DIR)
+
+                    env.FRONTEND_RELEASE_VERSION = getReleaseVersion('flutter', env.FRONTEND_DIR)
+                    containerizeApp('flutter', env.FRONTEND_APP_NAME, FLUTTER_RELEASE_REPO, DOCKER_BASE, env.FRONTEND_RELEASE_VERSION, 'both', env.FRONTEND_DIR)
                 }
             }
         }

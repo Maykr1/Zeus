@@ -37,92 +37,43 @@ pipeline {
             }
         }
 
-        stage('Run Pipelines') {
-            parallel {
-                // ==========================================
-                // BACKEND PIPELINE
-                // ==========================================
-                stage('Backend') {
-                    tools { jdk 'JDK25' }
-                    when {
-                        allOf {
-                            expression { env.BACKEND_DIR != "" }
-                            anyOf {
-                                changeset "${env.BACKEND_DIR}/**" // Simplified since BACKEND_DIR is zeus-api
-                                changeset "pom.xml"              // Listen to the ROOT pom
-                            }
-                        }
-                    }
-                    stages {
-                        stage('Test') {
-                            steps {
-                                dir(env.BACKEND_DIR) { testApp('maven') }
-                            }
-                        }
-                        stage('Build') {
-                            steps {
-                                dir(env.BACKEND_DIR) { buildApp('maven') }
-                            }
-                        }
-                        stage('SonarQube') {
-                            steps {
-                                dir(env.BACKEND_DIR) { sonarApp('maven', env.BACKEND_APP_NAME) }
-                            }
-                        }
-                        stage('Publish Snapshot') {
-                            steps {
-                                script {
-                                    env.BACKEND_SNAPSHOT_VERSION = getSnapshotVersion('maven')
-                                }
-                                dir(env.BACKEND_DIR) {
-                                    setVersion('maven', env.BACKEND_SNAPSHOT_VERSION)
-                                    containerizeApp('maven', env.BACKEND_APP_NAME, SNAPSHOT_REPO, DOCKER_BASE, env.COMMIT_ID, 'both')
-                                }
-                            }
-                        }
-                    }
+        stage('Test') {
+            steps {
+                script {
+                    testApp('maven', env.BACKEND_DIR)
+                    testApp('flutter', env.FRONTEND_DIR) // If you don't want to run this, don't even include it.
                 }
+            }
+        }
 
-                // ==========================================
-                // FRONTEND PIPELINE
-                // ==========================================
-                stage('Frontend') {
-                    when {
-                        allOf {
-                            expression { env.FRONTEND_DIR != "" }
-                            anyOf {
-                                changeset "${env.FRONTEND_DIR}/**"
-                                changeset "pom.xml"
-                            }
-                        }
-                    }
-                    stages {
-                        stage('Test') {
-                            steps {
-                                dir(env.FRONTEND_DIR) { testApp('flutter') }
-                            }
-                        }
-                        stage('Build') {
-                            steps {
-                                dir(env.FRONTEND_DIR) { buildApp('flutter') }
-                            }
-                        }
-                        stage('SonarQube') {
-                            steps {
-                                dir(env.FRONTEND_DIR) { sonarApp('flutter', env.FRONTEND_APP_NAME) }
-                            }
-                        }
-                        stage('Publish Snapshot') {
-                            steps {
-                                script {
-                                    env.FRONTEND_SNAPSHOT_VERSION = getSnapshotVersion('flutter')
-                                }
-                                dir(env.FRONTEND_DIR) {
-                                    containerizeApp('flutter', env.FRONTEND_APP_NAME, FLUTTER_SNAPSHOT_REPO, DOCKER_BASE, env.COMMIT_ID, 'both')
-                                }
-                            }
-                        }
-                    }
+        stage('Build') {
+            steps {
+                script {
+                    buildApp('maven', env.BACKEND_DIR)
+                    buildApp('flutter', env.FRONTEND_DIR)
+                }
+            }
+        }
+
+        stage('SonarQube') {
+            steps {
+                script {
+                    sonarApp('maven', env.BACKEND_APP_NAME, env.BACKEND_DIR)
+                    sonarApp('flutter', env.FRONTEND_APP_NAME, env.FRONTEND_DIR)
+                }
+            }
+        }
+
+        stage('Publish Snapshot') {
+            steps {
+                script {
+                    env.BACKEND_SNAPSHOT_VERSION = getSnapshotVersion('maven', env.BACKEND_DIR)
+                    setVersion('maven', env.BACKEND_SNAPSHOT_VERSION, env.BACKEND_DIR)
+                    containerizeApp('maven', env.BACKEND_APP_NAME, SNAPSHOT_REPO, DOCKER_BASE, env.COMMIT_ID, 'both', env.BACKEND_DIR)
+
+                    env.FRONTEND_SNAPSHOT_VERSION = getSnapshotVersion('flutter', env.FRONTEND_DIR)
+                    setVersion('flutter', env.FRONTEND_SNAPSHOT_VERSION, env.FRONTEND_DIR)
+                    containerizeApp('flutter', env.FRONTEND_APP_NAME, FLUTTER_SNAPSHOT_REPO, DOCKER_BASE, env.COMMIT_ID, 'both', env.FRONTEND_DIR)
                 }
             }
         }
