@@ -19,7 +19,7 @@
     <description>Parent POM for the Zeus project</description>
 
     <modules>
-        <module>zeus-ui</module>
+        <module>zeus-api</module>
     </modules>
     
     <properties>
