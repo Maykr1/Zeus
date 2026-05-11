@@ -1,3 +1,6 @@
 spring:
   application:
     name: zeus-api
+
+  profiles:
+    active: ${ACTIVE_PROFILE:local}
