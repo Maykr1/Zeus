@@ -3,7 +3,10 @@
 pipeline {
     agent any
     options { timestamps(); disableConcurrentBuilds() }
-    tools { maven 'maven-3.9.11' }
+    tools { 
+        maven 'maven-3.9.11' 
+        jdk 'JDK25' 
+    }
 
     environment {
         // --- DIRECTORIES ---
