@@ -10,4 +10,8 @@ class ZeusApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void mainMethodTest() {
+		ZeusApplication.main(new String[] {});
+	}
 }
