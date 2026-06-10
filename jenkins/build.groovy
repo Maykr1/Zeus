@@ -3,8 +3,8 @@
 pipeline {
     agent any
     options { timestamps(); disableConcurrentBuilds() }
-    tools { maven 'maven-3.9.16' }
-    
+    tools { maven 'maven-3.9.16'; jdk 'JDK25' }
+
     stages {
         stage('Checkout Repo') {
             steps {
