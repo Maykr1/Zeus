@@ -1,0 +1,8 @@
+spring: 
+    application:
+        name: zeus
+
+    http:
+        clients:
+            connect-timeout: 30s
+            read-timeout: 30s
