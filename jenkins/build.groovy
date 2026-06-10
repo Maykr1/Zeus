@@ -4,9 +4,7 @@ pipeline {
     agent any
     options { timestamps(); disableConcurrentBuilds() }
     tools { maven 'maven-3.9.16' }
-
-    environment {}
-
+    
     stages {
         stage('Checkout Repo') {
             steps {
