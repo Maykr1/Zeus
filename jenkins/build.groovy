@@ -24,7 +24,7 @@ pipeline {
 
         stage('SonarQube') {
             steps {
-                sonarApp('maven')
+                sonarApp('maven', APP_NAME)
             }
         }
 
