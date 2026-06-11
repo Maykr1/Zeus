@@ -10,7 +10,7 @@ pipeline {
 
     environment {
         // --- APP META ---
-        APP_NAME = 'Zeus'
+        APP_NAME = 'zeus'
 
         // --- HARBOR ---
         HARBOR_HOST = 'harbor.ethansclark.com'
