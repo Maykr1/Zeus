@@ -5,7 +5,7 @@ pipeline {
     options { timestamps(); disableConcurrentBuilds() }
     tools { 
         maven 'maven-3.9.16' 
-        docker 'docker' 
+        DockerTool 'docker' 
     }
 
     environment {
