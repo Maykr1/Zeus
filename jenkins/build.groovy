@@ -6,7 +6,13 @@ pipeline {
     tools { maven 'maven-3.9.16' }
 
     environment {
+        // --- APP META ---
         APP_NAME = 'Zeus'
+
+        // --- HARBOR ---
+        HARBOR_HOST = 'harbor.ethansclark.com'
+        HARBOR_PROJECT = 'olympus-apps'
+        HARBOR_CREDENTIALS_ID = 'harbor-registry-credentials'
     }
 
     stages {
@@ -18,19 +24,33 @@ pipeline {
 
         stage('Test') {
             steps {
-                testApp('maven')
+                testApp(buildTool: 'maven')
             }
         }
 
         stage('SonarQube') {
             steps {
-                sonarApp('maven', APP_NAME)
+                sonarApp(
+                    buildTool: 'maven', 
+                    appName: env.APP_NAME
+                )
             }
         }
 
         stage('Build') {
             steps {
-                buildApp('maven')
+                buildApp(buildTool: 'maven')
+            }
+        }
+
+        stage('Containerize') {
+            steps {
+                containerizeApp(
+                    imageName: env.APP_NAME, 
+                    harborHost: env.HARBOR_HOST,
+                    harborProject: env.HARBOR_PROJECT,
+                    harborCredentialsId: env.HARBOR_CREDENTIALS_ID
+                )
             }
         }
     }
