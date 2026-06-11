@@ -3,7 +3,10 @@
 pipeline {
     agent any
     options { timestamps(); disableConcurrentBuilds() }
-    tools { maven 'maven-3.9.16'; docker 'docker' }
+    tools { 
+        maven 'maven-3.9.16' 
+        docker 'docker' 
+    }
 
     environment {
         // --- APP META ---
