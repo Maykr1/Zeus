@@ -1,8 +1,23 @@
 spring: 
-    application:
-        name: zeus
+  application:
+    name: zeus
 
-    http:
-        clients:
-            connect-timeout: 30s
-            read-timeout: 30s
+  http:
+    clients:
+      connect-timeout: 30s
+      read-timeout: 30s
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true

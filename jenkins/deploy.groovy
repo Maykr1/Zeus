@@ -5,32 +5,49 @@ pipeline {
     options { timestamps(); disableConcurrentBuilds() }
     tools { maven 'maven-3.9.16' }
 
+    parameters {
+        string(
+            name: 'COMMIT_ID',
+            defaultValue: 'latest',
+            description: 'Git commit ID to deploy (branch, tag, or sha)'
+        )
+        choice(name: 'ENVIRONMENT',
+            choices: ['dev', 'prod'],
+            description: 'Choose which environment to deploy the image to.'
+        )
+    }
+
     environment {
-        APP_NAME = 'Zeus'
+        // --- APP META ---
+        APP_NAME = 'zeus'
+
+        // --- HARBOR ---
+        HARBOR_HOST = 'harbor.ethansclark.com'
+        HARBOR_PROJECT = 'olympus-apps'
     }
 
     stages {
-        stage('Checkout Repo') {
+        stage('Pull Image') {
             steps {
-                checkout scm
+                pullImage(
+                    imageName: env.APP_NAME,
+                    imageTag: params.COMMIT_ID,
+                    harborHost: env.HARBOR_HOST,
+                    harborProject: env.HARBOR_PROJECT,
+                    harborCredentialsId: env.HARBOR_CREDENTIALS_ID
+                )
             }
         }
 
-        stage('Test') {
+        stage('Deploy') {
             steps {
-                testApp('maven')
-            }
-        }
-
-        stage('SonarQube') {
-            steps {
-                sonarApp('maven')
-            }
-        }
-
-        stage('Build') {
-            steps {
-                buildApp('maven')
+                deployApp(
+                    imageName: env.APP_NAME,
+                    imageTag: params.COMMIT_ID,
+                    namespace: env.ENVIRONMENT,
+                    harborHost: env.HARBOR_HOST,
+                    harborProject: env.HARBOR_PROJECT
+                )
             }
         }
     }
