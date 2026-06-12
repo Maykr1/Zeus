@@ -5,6 +5,10 @@ pipeline {
     options { timestamps(); disableConcurrentBuilds() }
     tools { maven 'maven-3.9.16' }
 
+    environment {
+        APP_NAME = 'Zeus'
+    }
+
     stages {
         stage('Checkout Repo') {
             steps {
@@ -15,6 +19,12 @@ pipeline {
         stage('Test') {
             steps {
                 testApp('maven')
+            }
+        }
+
+        stage('SonarQube') {
+            steps {
+                sonarApp('maven')
             }
         }
 
