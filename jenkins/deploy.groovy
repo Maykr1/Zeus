@@ -45,7 +45,7 @@ pipeline {
                 deployApp(
                     imageName: env.APP_NAME,
                     imageTag: params.COMMIT_ID,
-                    namespace: env.ENVIRONMENT,
+                    namespace: params.ENVIRONMENT,
                     harborHost: env.HARBOR_HOST,
                     harborProject: env.HARBOR_PROJECT
                 )
@@ -55,10 +55,10 @@ pipeline {
 
     post {
         success {
-            echo 'Build complete ✅' 
+            echo 'Deployment complete ✅' 
         }
         failure {
-            echo 'Build failed ❌' 
+            echo 'Deployment failed ❌' 
         }
     }
 }
