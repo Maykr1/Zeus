@@ -24,6 +24,7 @@ pipeline {
         // --- HARBOR ---
         HARBOR_HOST = 'harbor.ethansclark.com'
         HARBOR_PROJECT = 'olympus-apps'
+        HARBOR_CREDENTIALS_ID = 'harbor-registry-credentials'
     }
 
     stages {
