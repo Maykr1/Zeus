@@ -26,26 +26,28 @@ pipeline {
 
     environment {
         // --- APP META ---
-        APP_NAME = 'zeus'
+        APP_NAME                = 'zeus'
 
         // --- HARBOR ---
-        HARBOR_HOST = 'harbor.ethansclark.com'
-        HARBOR_PROJECT = 'olympus-apps'
-        HARBOR_CREDENTIALS_ID = 'harbor-olympus-puller'
-        CHART_VERSION = '0.1.0'
+        HARBOR_HOST             = 'harbor.ethansclark.com'
+        HARBOR_PROJECT          = 'olympus-apps'
+        HARBOR_CREDENTIALS_ID   = 'harbor-olympus-puller'
+        CHART_PROJECT           = 'olympus-charts'
+        CHART_VERSION           = '0.1.0'
     }
 
     stages {
         stage('Deploy') {
             steps {
                 deployApp(
-                    imageName: env.APP_NAME,
-                    imageTag: params.COMMIT_ID,
-                    namespace: params.ENVIRONMENT,
-                    harborHost: env.HARBOR_HOST,
-                    harborProject: env.HARBOR_PROJECT,
-                    harborCredentialsId: env.HARBOR_CREDENTIALS_ID,
-                    chartVersion: env.CHART_VERSION
+                    imageName:              env.APP_NAME,
+                    imageTag:               params.COMMIT_ID,
+                    namespace:              params.ENVIRONMENT,
+                    harborHost:             env.HARBOR_HOST,
+                    harborProject:          env.HARBOR_PROJECT,
+                    harborCredentialsId:    env.HARBOR_CREDENTIALS_ID,
+                    chartProject:           env.CHART_PROJECT,
+                    chartVersion:           env.CHART_VERSION
                 )
             }
         }

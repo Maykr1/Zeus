@@ -14,11 +14,11 @@ pipeline {
     
     environment {
         // --- APP META ---
-        APP_NAME = 'zeus'
+        APP_NAME        = 'zeus'
 
         // --- HARBOR ---
-        HARBOR_HOST = 'harbor.ethansclark.com'
-        HARBOR_PROJECT = 'olympus-apps'
+        HARBOR_HOST     = 'harbor.ethansclark.com'
+        HARBOR_PROJECT  = 'olympus-apps'
     }
 
     stages {
@@ -52,9 +52,9 @@ pipeline {
         stage('Containerize') {
             steps {
                 containerizeApp(
-                    imageName: env.APP_NAME, 
-                    harborHost: env.HARBOR_HOST,
-                    harborProject: env.HARBOR_PROJECT
+                    imageName:      env.APP_NAME, 
+                    harborHost:     env.HARBOR_HOST,
+                    harborProject:  env.HARBOR_PROJECT
                 )
             }
         }
