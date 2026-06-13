@@ -1,9 +1,16 @@
-@Library('shared-jenkins-library@setup') _
+@Library('shared-jenkins-library@refactor') _
 
 pipeline {
-    agent any
-    options { timestamps(); disableConcurrentBuilds() }
-    tools { maven 'maven-3.9.16' }
+    agent {
+        kubernetes {
+            yaml deployPod()
+        }
+    }
+
+    options { 
+        timestamps() 
+        disableConcurrentBuilds() 
+    }
 
     parameters {
         string(
@@ -24,22 +31,11 @@ pipeline {
         // --- HARBOR ---
         HARBOR_HOST = 'harbor.ethansclark.com'
         HARBOR_PROJECT = 'olympus-apps'
-        HARBOR_CREDENTIALS_ID = 'harbor-registry-credentials'
+        HARBOR_CREDENTIALS_ID = 'harbor-olympus-puller'
+        CHART_VERSION = '0.1.0'
     }
 
     stages {
-        stage('Pull Image') {
-            steps {
-                pullImage(
-                    imageName: env.APP_NAME,
-                    imageTag: params.COMMIT_ID,
-                    harborHost: env.HARBOR_HOST,
-                    harborProject: env.HARBOR_PROJECT,
-                    harborCredentialsId: env.HARBOR_CREDENTIALS_ID
-                )
-            }
-        }
-
         stage('Deploy') {
             steps {
                 deployApp(
@@ -47,7 +43,9 @@ pipeline {
                     imageTag: params.COMMIT_ID,
                     namespace: params.ENVIRONMENT,
                     harborHost: env.HARBOR_HOST,
-                    harborProject: env.HARBOR_PROJECT
+                    harborProject: env.HARBOR_PROJECT,
+                    harborCredentialsId: env.HARBOR_CREDENTIALS_ID,
+                    chartVersion: env.CHART_VERSION
                 )
             }
         }
