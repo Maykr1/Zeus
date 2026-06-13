@@ -1,18 +1,24 @@
-@Library('shared-jenkins-library@setup') _
+@Library('shared-jenkins-library@refactor') _
 
 pipeline {
-    agent any
-    options { timestamps(); disableConcurrentBuilds() }
-    tools { maven 'maven-3.9.16' }
-
+    agent {
+        kubernetes {
+            yaml buildPod()
+        }
+    }
+    
+    options { 
+        timestamps() 
+        disableConcurrentBuilds() 
+    }
+    
     environment {
         // --- APP META ---
-        APP_NAME = 'zeus'
+        APP_NAME        = 'zeus'
 
         // --- HARBOR ---
-        HARBOR_HOST = 'harbor.ethansclark.com'
-        HARBOR_PROJECT = 'olympus-apps'
-        HARBOR_CREDENTIALS_ID = 'harbor-registry-credentials'
+        HARBOR_HOST     = 'harbor.ethansclark.com'
+        HARBOR_PROJECT  = 'olympus-apps'
     }
 
     stages {
@@ -46,10 +52,9 @@ pipeline {
         stage('Containerize') {
             steps {
                 containerizeApp(
-                    imageName: env.APP_NAME, 
-                    harborHost: env.HARBOR_HOST,
-                    harborProject: env.HARBOR_PROJECT,
-                    harborCredentialsId: env.HARBOR_CREDENTIALS_ID
+                    imageName:      env.APP_NAME, 
+                    harborHost:     env.HARBOR_HOST,
+                    harborProject:  env.HARBOR_PROJECT
                 )
             }
         }

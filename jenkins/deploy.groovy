@@ -1,9 +1,16 @@
-@Library('shared-jenkins-library@setup') _
+@Library('shared-jenkins-library@refactor') _
 
 pipeline {
-    agent any
-    options { timestamps(); disableConcurrentBuilds() }
-    tools { maven 'maven-3.9.16' }
+    agent {
+        kubernetes {
+            yaml deployPod()
+        }
+    }
+
+    options { 
+        timestamps() 
+        disableConcurrentBuilds() 
+    }
 
     parameters {
         string(
@@ -19,35 +26,28 @@ pipeline {
 
     environment {
         // --- APP META ---
-        APP_NAME = 'zeus'
+        APP_NAME                = 'zeus'
 
         // --- HARBOR ---
-        HARBOR_HOST = 'harbor.ethansclark.com'
-        HARBOR_PROJECT = 'olympus-apps'
-        HARBOR_CREDENTIALS_ID = 'harbor-registry-credentials'
+        HARBOR_HOST             = 'harbor.ethansclark.com'
+        HARBOR_PROJECT          = 'olympus-apps'
+        HARBOR_CREDENTIALS_ID   = 'harbor-olympus-puller'
+        CHART_PROJECT           = 'olympus-charts'
+        CHART_VERSION           = '0.1.0'
     }
 
     stages {
-        stage('Pull Image') {
-            steps {
-                pullImage(
-                    imageName: env.APP_NAME,
-                    imageTag: params.COMMIT_ID,
-                    harborHost: env.HARBOR_HOST,
-                    harborProject: env.HARBOR_PROJECT,
-                    harborCredentialsId: env.HARBOR_CREDENTIALS_ID
-                )
-            }
-        }
-
         stage('Deploy') {
             steps {
                 deployApp(
-                    imageName: env.APP_NAME,
-                    imageTag: params.COMMIT_ID,
-                    namespace: params.ENVIRONMENT,
-                    harborHost: env.HARBOR_HOST,
-                    harborProject: env.HARBOR_PROJECT
+                    imageName:              env.APP_NAME,
+                    imageTag:               params.COMMIT_ID,
+                    namespace:              params.ENVIRONMENT,
+                    harborHost:             env.HARBOR_HOST,
+                    harborProject:          env.HARBOR_PROJECT,
+                    harborCredentialsId:    env.HARBOR_CREDENTIALS_ID,
+                    chartProject:           env.CHART_PROJECT,
+                    chartVersion:           env.CHART_VERSION
                 )
             }
         }
