@@ -1,6 +1,8 @@
 spring: 
   application:
     name: zeus
+  profiles:
+    active: ${ACTIVE_PROFILE:local}
 
   http:
     clients:

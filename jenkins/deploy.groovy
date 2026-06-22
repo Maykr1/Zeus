@@ -1,4 +1,4 @@
-@Library('shared-jenkins-library@refactor') _
+@Library('shared-jenkins-library@vault') _
 
 pipeline {
     agent {
@@ -37,6 +37,15 @@ pipeline {
     }
 
     stages {
+        stage('Pull Secrets') {
+            steps {
+                pullSecrets(
+                    appName:      env.APP_NAME,
+                    environment:  params.ENVIRONMENT
+                )
+            }
+        }
+
         stage('Deploy') {
             steps {
                 deployApp(
