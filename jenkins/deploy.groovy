@@ -37,15 +37,6 @@ pipeline {
     }
 
     stages {
-        stage('Pull Secrets') {
-            steps {
-                pullSecrets(
-                    appName:      env.APP_NAME,
-                    environment:  params.ENVIRONMENT
-                )
-            }
-        }
-
         stage('Deploy') {
             steps {
                 deployApp(
