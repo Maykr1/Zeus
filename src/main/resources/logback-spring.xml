@@ -1,0 +1,77 @@
+<configuration debug="true">
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+    <springProperty scope="context" name="ES_HOST" source="elasticsearch.host"/>
+    <springProperty scope="context" name="ES_PORT" source="elasticsearch.port"/>
+    <springProperty scope="context" name="INDEX_PREFIX" source="elasticsearch.index-prefix"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <logLevel/>
+                <threadName/>
+                <loggerName/>
+                <message/>
+                <mdc/>
+                <pattern>
+                    <pattern>
+                        {
+                            "application": "${springAppName}",
+                            "index": "${INDEX_PREFIX}"
+                        }
+                    </pattern>
+                </pattern>
+                <stackTrace/>
+            </providers>
+        </encoder>
+    </appender>
+
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${ES_HOST}:${ES_PORT}</destination>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <logLevel/>
+                <threadName/>
+                <loggerName/>
+                <message/>
+                <mdc/>
+                <pattern>
+                    <pattern>
+                        {
+                            "application": "${springAppName}",
+                            "index": "${INDEX_PREFIX}"
+                        }
+                    </pattern>
+                </pattern>
+                <stackTrace/>
+            </providers>
+        </encoder>
+        <keepAliveDuration>5 minutes</keepAliveDuration>
+        <reconnectionDelay>10 seconds</reconnectionDelay>
+    </appender>
+
+    <springProfile name="local">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="!local">
+        <root level="INFO">
+            <appender-ref ref="JSON_CONSOLE"/>
+            <appender-ref ref="LOGSTASH"/>
+        </root>
+    </springProfile>
+
+</configuration>
