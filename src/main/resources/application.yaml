@@ -25,6 +25,4 @@ management:
       enabled: true
 
 elasticsearch:
-  host: ${ELASTICSEARCH_HOST:-}
-  port: ${ELASTICSEARCH_PORT:-}
   index-prefix: ${ELASTICSEARCH_INDEX_PREFIX:-}

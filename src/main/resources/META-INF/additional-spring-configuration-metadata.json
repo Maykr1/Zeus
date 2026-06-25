@@ -4,16 +4,6 @@
             "name": "elasticsearch.index-prefix",
             "type": "java.lang.String",
             "description": "A description for 'elasticsearch.index-prefix'"
-        },
-        {
-            "name": "elasticsearch.port",
-            "type": "java.lang.String",
-            "description": "A description for 'elasticsearch.port'"
-        },
-        {
-            "name": "elasticsearch.host",
-            "type": "java.lang.String",
-            "description": "A description for 'elasticsearch.host'"
         }
     ]
 }
