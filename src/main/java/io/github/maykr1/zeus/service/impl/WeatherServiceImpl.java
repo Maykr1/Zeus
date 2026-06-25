@@ -60,17 +60,28 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     private LocationResponse getLocation() {
-        long start                  = System.currentTimeMillis();
-        LocationResponse response   = null;
+        long start = System.currentTimeMillis();
 
         logger.info("Retrieving location...");
 
         try {
-            response = restClient.get()
+            String publicIp = restClient.get()
+                .uri(uriBuilder -> uriBuilder
+                    .scheme("https")
+                    .host("api.ipify.org")
+                    .build()
+                )
+                .retrieve()
+                .body(String.class);
+
+            logger.info("Found public WAN IP: {}");
+
+            
+            LocationResponse response = restClient.get()
                 .uri(uriBuilder -> uriBuilder
                     .scheme("http")
                     .host("ip-api.com")
-                    .path("json")
+                    .pathSegment("json", publicIp)
                     .queryParam("fields", "region,city,lat,lon")
                     .build()
                 )
@@ -81,13 +92,13 @@ public class WeatherServiceImpl implements WeatherService {
                 logger.error("[RuntimeException] - Error occurred while retrieving location");
                 throw new RuntimeException("Failed to retrieve location: Latitude or Longitude is null");
             }
+
+            logger.info("[{} ms] - Finished retrieving location => lat: {}, lon: {}", System.currentTimeMillis() - start, response.latitude(), response.longitude());
+            return response;
             
         } catch (Exception e) {
             logger.error("[UnexpectedException] - Unexpected error occurred while retrieving location", e);
             throw e;
         }
-
-        logger.info("[{} ms] - Finished retrieving location => lat: {}, lon: {}", System.currentTimeMillis() - start, response.latitude(), response.longitude());
-        return response;
     }
 }

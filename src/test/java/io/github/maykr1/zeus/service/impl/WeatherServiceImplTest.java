@@ -48,6 +48,7 @@ class WeatherServiceImplTest {
         when(restClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(any(Function.class))).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.body(String.class)).thenReturn("8.8.8.8");
         when(responseSpec.body(LocationResponse.class)).thenReturn(null);
 
         assertThrows(RuntimeException.class, () -> weatherService.getTodayWeather());
@@ -59,6 +60,7 @@ class WeatherServiceImplTest {
         when(restClient.get()).thenReturn(requestHeadersUriSpec);
         when(requestHeadersUriSpec.uri(any(Function.class))).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+        when(responseSpec.body(String.class)).thenReturn("8.8.8.8");
         when(responseSpec.body(LocationResponse.class)).thenReturn(locationResponse);
 
         assertThrows(RuntimeException.class, () -> weatherService.getTodayWeather());
@@ -74,6 +76,7 @@ class WeatherServiceImplTest {
         when(requestHeadersUriSpec.uri(uriFunctionCaptor.capture())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         
+        when(responseSpec.body(String.class)).thenReturn("8.8.8.8");
         when(responseSpec.body(LocationResponse.class)).thenReturn(location);
         when(responseSpec.body(WeatherResponse.class)).thenReturn(weather);
 
@@ -98,6 +101,7 @@ class WeatherServiceImplTest {
         when(requestHeadersUriSpec.uri(uriFunctionCaptor.capture())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         
+        when(responseSpec.body(String.class)).thenReturn("8.8.8.8");
         when(responseSpec.body(LocationResponse.class)).thenReturn(location);
         when(responseSpec.body(WeatherResponse.class)).thenReturn(weather);
 
@@ -119,6 +123,7 @@ class WeatherServiceImplTest {
         when(requestHeadersUriSpec.uri(any(Function.class))).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
         
+        when(responseSpec.body(String.class)).thenReturn("8.8.8.8");
         when(responseSpec.body(LocationResponse.class)).thenReturn(location);
         when(responseSpec.body(WeatherResponse.class)).thenThrow(new RuntimeException("API error"));
 
