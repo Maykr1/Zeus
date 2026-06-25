@@ -26,3 +26,8 @@ management:
 
 elasticsearch:
   index-prefix: ${ELASTICSEARCH_INDEX_PREFIX:-}
+
+zeus:
+  location:
+    latitude: ${ZEUS_LATITUDE:-0.0}
+    longitude: ${ZEUS_LONGITUDE:-0.0}
