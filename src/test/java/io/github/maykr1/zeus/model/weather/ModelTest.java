@@ -6,10 +6,8 @@ import org.junit.jupiter.api.Test;
 class ModelTest {
 
     @Test
-    void testLocationResponse() {
-        LocationResponse location = new LocationResponse("NY", "New York", 40.71, -74.01);
-        assertEquals("NY", location.state());
-        assertEquals("New York", location.city());
+    void testLocation() {
+        Location location = new Location(40.71, -74.01);
         assertEquals(40.71, location.latitude());
         assertEquals(-74.01, location.longitude());
     }

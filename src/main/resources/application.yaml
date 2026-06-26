@@ -1,6 +1,8 @@
 spring: 
   application:
     name: zeus
+  profiles:
+    active: ${ACTIVE_PROFILE:local}
 
   http:
     clients:
@@ -21,3 +23,11 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+
+elasticsearch:
+  index-prefix: ${ELASTICSEARCH_INDEX_PREFIX:-}
+
+zeus:
+  location:
+    latitude: ${ZEUS_LATITUDE:-0.0}
+    longitude: ${ZEUS_LONGITUDE:-0.0}
