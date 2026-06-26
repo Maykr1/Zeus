@@ -1,4 +1,4 @@
-@Library('shared-jenkins-library@vault') _
+@Library('shared-jenkins-library@main') _
 
 pipeline {
     agent any

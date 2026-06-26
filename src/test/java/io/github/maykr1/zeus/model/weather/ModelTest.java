@@ -7,7 +7,7 @@ class ModelTest {
 
     @Test
     void testLocation() {
-        Location location = new Location(40.71, -74.01);
+        LocationProperties location = new LocationProperties(40.71, -74.01);
         assertEquals(40.71, location.latitude());
         assertEquals(-74.01, location.longitude());
     }

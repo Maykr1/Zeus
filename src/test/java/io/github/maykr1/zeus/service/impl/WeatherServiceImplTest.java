@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriBuilder;
 
-import io.github.maykr1.zeus.model.weather.Location;
+import io.github.maykr1.zeus.model.weather.LocationProperties;
 import io.github.maykr1.zeus.model.weather.WeatherResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,13 +33,13 @@ class WeatherServiceImplTest {
     @Mock
     private RestClient.ResponseSpec responseSpec;
 
-    private Location location;
+    private LocationProperties location;
 
     private WeatherServiceImpl weatherService;
 
     @BeforeEach
     void setUp() {
-        location = new Location(40.71, -74.01);
+        location = new LocationProperties(40.71, -74.01);
         weatherService = new WeatherServiceImpl(restClient, location);
     }
 

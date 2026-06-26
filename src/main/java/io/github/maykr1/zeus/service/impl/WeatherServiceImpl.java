@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
-import io.github.maykr1.zeus.model.weather.Location;
+import io.github.maykr1.zeus.model.weather.LocationProperties;
 import io.github.maykr1.zeus.model.weather.WeatherResponse;
 import io.github.maykr1.zeus.service.WeatherService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WeatherServiceImpl implements WeatherService {
     private final RestClient restClient;
-    private final Location location;
+    private final LocationProperties location;
     private static final Logger logger = LoggerFactory.getLogger(WeatherServiceImpl.class);
 
     @Override
