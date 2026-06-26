@@ -50,6 +50,9 @@ pipeline {
         }
 
         stage('Containerize') {
+            when {
+                expression { env.CHANGE_ID == null }
+            }
             steps {
                 containerizeApp(
                     imageName:      env.APP_NAME, 
